@@ -16,5 +16,13 @@ class Product(models.Model):
     created_by=models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     image=models.ImageField(upload_to='./images',blank=False, null=True)
 
+
+    def save(self, *args, **kwargs):
+        # If the created_by field is not set and a user is logged in, set the current user as the creator
+        if not self.created_by and hasattr(self, 'request') and self.request.user.is_authenticated:
+            self.created_by = self.request.user
+
+        super().save(*args, **kwargs)
+        
     def __str__(self):
         return self.Name

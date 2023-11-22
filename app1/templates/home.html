@@ -18,6 +18,19 @@
             </div>
             <p>{{product.Name}}</p>
             <p>${{product.Price}}</p>
+            {% if product.created_by.id == user.id %}
+                <a href="">Edit</a>
+                <a href="">Delete</a>
+
+            {% else %}
+                {% if user.is_authenticated %}
+                <a href="">Send Message</a>
+
+                {% else %}
+                    <p>You need to be logged in to send a message</p>
+                {% endif %}
+
+            {% endif %}
         </div>
     {% endfor %}
 </div>

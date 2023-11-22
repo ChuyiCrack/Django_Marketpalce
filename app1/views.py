@@ -56,9 +56,18 @@ def logout_user(request):
 
 def add_products(request):
     if request.method=='POST':
-        form= ProductForm(request.POST,request.FILES)
+        pk=request.POST.get('submit')
+        if not pk:
+            form= ProductForm(request.POST,request.FILES)
+
+        else:
+            product=Product.objects.get(id=pk)
+            form= ProductForm(request.POST,instance=Product)
+        
         if form.is_valid():
-            form.save()
+            product= form.save(commit=False)
+            product.request = request
+            product.save()
             print(True)
             return redirect('home')
 

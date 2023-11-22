@@ -2,12 +2,16 @@ from django.shortcuts import render,redirect
 from .forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login ,logout
+from .forms import ProductForm
+from .models import Product
 
 
 def home(request):
     user = request.user
+    products=Product.objects.all()
     context={
-        'user':user
+        'user':user,
+        'products':products
     }
     return render(request,'home.html',context)
 
@@ -49,3 +53,24 @@ def register(request):
 def logout_user(request):
     logout(request)
     return redirect('home')
+
+def add_products(request):
+    if request.method=='POST':
+        form= ProductForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            print(True)
+            return redirect('home')
+
+        else:
+            print('Is not valid')
+            print(form.errors)
+    else:
+        form=ProductForm()
+
+
+    context={
+        'form':form
+    }
+    
+    return render(request,'Products.html',context)

@@ -1,1 +1,61 @@
 {% include 'navbar.html' %}
+
+<div>
+    <a href="{% url 'products' %}">Add Products</a>
+</div>
+
+<div class="outside_box">
+
+    {% for product in products %}
+        
+        {% if forloop.counter < 5 %}
+        <div class="box_product">
+        {% else %}
+        <div class="four_box box_product">
+        {% endif %}
+            <div class="img_container">\
+                <img class="img_product" src="{{product.image.url}}">
+            </div>
+            <p>{{product.Name}}</p>
+            <p>${{product.Price}}</p>
+        </div>
+    {% endfor %}
+</div>
+
+
+
+
+<style>
+    .outside_box{
+        background-color: red;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between; /* Adjust as needed */
+        
+        padding: 20px;
+    }
+
+    .img_product{
+        width: 100%;
+        height: 100%;
+        
+    }
+
+    .four_box{
+        margin-top: 50px;
+    }
+
+    .outside_box .box_product{
+        background-color: green;
+        margin-right: 30px;
+        margin-left: 30px;
+    }
+
+    .img_container{
+        width: 300px;
+        height: 300px;
+        overflow: hidden;
+    }
+
+
+</style>

@@ -77,9 +77,16 @@ def add_products(request):
     else:
         form=ProductForm()
 
-
     context={
         'form':form
     }
-    
+
     return render(request,'Products.html',context)
+
+def product_info(request, pk):
+    product= Product.objects.get(id=pk)
+    context={
+        'product':product
+    }
+    return render(request,'inf_product.html',context)
+    

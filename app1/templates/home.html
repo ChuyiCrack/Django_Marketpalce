@@ -5,16 +5,14 @@
 </div>
 
 <div class="outside_box">
-
-    {% for product in products %}
-        
+    {% for product in products %}  
         {% if forloop.counter < 5 %}
         <div class="box_product">
         {% else %}
         <div class="four_box box_product">
         {% endif %}
             <div class="img_container">\
-                <img class="img_product" src="{{product.image.url}}">
+                <a href="{% url 'product_info' product.id %}"><img class="img_product" src="{{product.image.url}}"></a>
             </div>
             <p>{{product.Name}}</p>
             <p>${{product.Price}}</p>
@@ -58,7 +56,7 @@
         margin-top: 50px;
     }
 
-    .outside_box .box_product{
+    .box_product{
         background-color: green;
         margin-right: 30px;
         margin-left: 30px;
@@ -69,6 +67,4 @@
         height: 300px;
         overflow: hidden;
     }
-
-
 </style>

@@ -1,0 +1,27 @@
+<div class="box">
+    <h1>{{product.Name}}</h1>
+    <img src="{{product.image.url}}" alt="">
+    <h2>$ {{product.Price}}</h2>
+    <p>{{product.Description}}</p>
+    <p>Seller: <a href=""> {{product.created_by}}</a></p>
+    <a href="">Send a message</a>
+</div>
+
+
+
+
+<style>
+    img{
+        width: 500px;
+    }
+
+    .box{
+        background-color: red;
+        text-align: center;
+        width: 500px;
+    }
+
+    h1{
+        margin: 0;
+    }
+</style>

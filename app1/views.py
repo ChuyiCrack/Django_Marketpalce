@@ -4,11 +4,23 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login ,logout
 from .forms import ProductForm
 from .models import Product
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 
 def home(request):
     user = request.user
     products=Product.objects.all()
+    if request.method=='POST':
+        if 'edit' in request.POST:
+            pk=request.POST.get('edit')
+            return redirect('update_product',pk)
+        
+        elif 'delete' in request.POST:
+            pk=request.POST.get('delete')
+            product=Product.objects.get(id=pk)
+            product.delete()
+            return redirect('home')
     context={
         'user':user,
         'products':products
@@ -54,26 +66,28 @@ def logout_user(request):
     logout(request)
     return redirect('home')
 
+@login_required
 def add_products(request):
     if request.method=='POST':
-        pk=request.POST.get('submit')
-        if not pk:
-            form= ProductForm(request.POST,request.FILES)
+        if 'submit' in request.POST:
+            pk=request.POST.get('submit')
+            if not pk:
+                form= ProductForm(request.POST,request.FILES)
 
-        else:
-            product=Product.objects.get(id=pk)
-            form= ProductForm(request.POST,instance=Product)
-        
-        if form.is_valid():
-            product= form.save(commit=False)
-            product.request = request
-            product.save()
-            print(True)
-            return redirect('home')
+            else:
+                product=Product.objects.get(id=pk)
+                form= ProductForm(request.POST,instance=Product)
+            
+            if form.is_valid():
+                product= form.save(commit=False)
+                product.request = request
+                product.save()
+                print(True)
+                return redirect('home')
 
-        else:
-            print('Is not valid')
-            print(form.errors)
+            else:
+                print('Is not valid')
+                print(form.errors)
     else:
         form=ProductForm()
 
@@ -89,4 +103,46 @@ def product_info(request, pk):
         'product':product
     }
     return render(request,'inf_product.html',context)
+
+def edit_product(request,pk):
+    product=Product.objects.get(id=pk)
+
+    if request.method=='POST':
+        form=ProductForm(request.POST, request.FILES,instance=product)
+        if form.is_valid():
+            form.save()
+            print('gg')
+            return redirect('home')
+        
+    else:
+        form=ProductForm(instance=product)
+
+    context={
+        'form':form
+    }
+    return render(request,'update.html',context)
+
+def profile(request,pk):
+    if request.method=='POST':
+        if 'edit' in request.POST:
+            pk=request.POST.get('edit')
+            return redirect('update_product',pk)
+        
+        elif 'delete' in request.POST:
+            pk=request.POST.get('delete')
+            product=Product.objects.get(id=pk)
+            product.delete()
+            return redirect('home')
+        
+    user=User.objects.get(id=pk)
+    products=Product.objects.all()
+    User_Products=[product for product in products if product.created_by.id == user.id]
+
+    context={
+        'User':user,
+        'products':products,
+        'user_products':User_Products
+
+    }
     
+    return render(request,'Profile.html',context)

@@ -1,0 +1,83 @@
+{% include 'navbar.html' %}
+
+{% if request.user == User %}
+    <h1>My Products</h1>
+
+{% else %}
+    <h1>{{User.username}} Products</h1>
+
+{% endif %}
+
+
+<div class="god_container">
+{% for product in products %}
+    {% if product.created_by.id == User.id %}
+        <div class="principal_box">
+            <a href="{% url 'product_info' product.id %}"><img class="img_product" src="{{product.image.url}}"></a>
+            
+            <div>
+                <p>{{product.Name}}</p>
+                <p>${{product.Price}}</p>
+                {% if product.Description %}
+                <p>{{product.Description}}</p>
+                {% else %}
+                <p>Non Description</p>
+                {% endif %}
+            </div>
+            
+            {% if product.created_by.id == user.id or user.is_staff %}
+                <form method="post">
+                    {% csrf_token %}
+                    <button name="edit" value="{{product.id}}">Edit</button>
+                    <button name="delete" value="{{product.id}}">Delete</button>
+                </form>
+            {% endif %}  
+        </div>
+    {% endif %}
+{% endfor %}    
+</div>
+
+{% if user_products|length < 1 %}
+    <div class="sad_alert">
+        <h1 >You do not have products yet</h1>
+        <img width="180" class="sad_face" src="../../media/sad_face.png" alt="">
+    </div>
+
+    <style>
+        h1, .sad_face{
+            text-align: center;
+        }
+    </style>
+    
+{% endif %}
+
+<style>
+
+
+.god_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+    .img_product{
+        width: 100%;
+        height: 300px;
+        
+    }
+    
+    .principal_box{
+        background-color: red;
+        margin:0 25 0 25;
+        width: 350px;
+        
+    }
+
+    .sad_alert{
+
+    }
+
+
+    
+    
+</style>

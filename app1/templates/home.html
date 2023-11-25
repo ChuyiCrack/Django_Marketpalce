@@ -1,8 +1,10 @@
 {% include 'navbar.html' %}
 
+{% if user.is_authenticated %}
 <div>
     <a href="{% url 'products' %}">Add Products</a>
 </div>
+{% endif %}
 
 <div class="outside_box">
     {% for product in products %}  
@@ -16,10 +18,13 @@
             </div>
             <p>{{product.Name}}</p>
             <p>${{product.Price}}</p>
-            {% if product.created_by.id == user.id %}
-                <a href="">Edit</a>
-                <a href="">Delete</a>
-
+            {% if product.created_by.id == user.id or user.is_staff %}
+            <form method="post">
+                {% csrf_token %}
+                <button name="edit" value="{{product.id}}">Edit</button>
+                <button name="delete" value="{{product.id}}">Delete</button>
+            </form>  
+                
             {% else %}
                 {% if user.is_authenticated %}
                 <a href="">Send Message</a>

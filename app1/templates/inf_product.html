@@ -1,9 +1,10 @@
-<div class="box">
+{% include 'navbar.html' %}
+<div class="box_inf">
     <h1>{{product.Name}}</h1>
     <img src="{{product.image.url}}" alt="">
     <h2>$ {{product.Price}}</h2>
     <p>{{product.Description}}</p>
-    <p>Seller: <a href=""> {{product.created_by}}</a></p>
+    <p>Seller: <a href="{% url 'profile' product.created_by.id %}"> {{product.created_by}}</a></p>
     <a href="">Send a message</a>
 </div>
 
@@ -11,11 +12,12 @@
 
 
 <style>
-    img{
+    .box_inf img{
         width: 500px;
+        height: 500px;
     }
 
-    .box{
+    .box_inf{
         background-color: red;
         text-align: center;
         width: 500px;

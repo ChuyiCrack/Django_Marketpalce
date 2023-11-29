@@ -1,0 +1,72 @@
+{% include 'navbar.html' %}
+<div>
+    <h2><b>From: </b>{{Message.transmitter}}</h2>
+    <h3><b>To:</b> {{Message.Receiver}}</h3>
+    <p><b>Title:</b> {{Message.Title}}</p>
+    <p><b>Message: </b>{{Message.message}}</p>
+</div>
+
+<div class="msg_box">
+    {% for msg in chat %}
+        {% if msg.Creator.id == user.id %}
+        <p class="message_blue">{{msg.message_chat}}</p>
+        <p class="time_1">{{msg.creation_msg|date:"M d H:i"}}</p>
+        {% else %}
+        <p class="message">{{msg.message_chat}}</p>
+        <p class="time_2">{{msg.creation_msg|date:"M d H:i"}}</p>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    {{form}}
+    <button type="submit" name="submit">submit</button>
+</form>
+
+
+<style>
+    .msg_box{
+        background-color: grey;
+        width: 450px;
+        display: flex;
+        flex-direction: column;
+        
+        
+    }
+
+    .message_blue{
+        background-color: #35AFE4 ;
+        width: fit-content;
+        border: 2px solid black;
+        border-radius: 15%;
+        padding: 0 5px 0 5px;
+        margin-left: auto;
+        margin-bottom: 5;
+    }
+
+    .message{
+        background-color: #E44F35 ;
+        width: fit-content;
+        border: 2px solid black;
+        border-radius: 15%;
+        padding: 0 5px 0 5px;
+        margin-right: auto;
+        margin-bottom: 5;
+    }
+
+    .time_1{
+        font-size: 12px;
+        margin-left: auto;
+        margin-top: 0;
+        margin-right:5px;
+    }
+
+    .time_2{
+        font-size: 12px;
+        margin-right: auto;
+        margin-top: 0;
+        margin-bottom: 0;
+        margin-left:5px; 
+    }
+</style>

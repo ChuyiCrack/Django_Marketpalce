@@ -5,7 +5,14 @@
     <h2>$ {{product.Price}}</h2>
     <p>{{product.Description}}</p>
     <p>Seller: <a href="{% url 'profile' product.created_by.id %}"> {{product.created_by}}</a></p>
-    <a href="">Send a message</a>
+    {% for msg in messages %}
+        {% if msg.product_selling.id == product.id %}
+            <a href="{% url 'chat' msg.id %}">Send a message</a>
+
+        {% else %}
+            <a href="{% url 'message' product.id %}">Send a message</a>
+        {% endif %}
+    {% endfor %}
 </div>
 
 

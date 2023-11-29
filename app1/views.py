@@ -1,13 +1,12 @@
 from django.shortcuts import render,redirect
-from .forms import UserCreationForm
+from .forms import UserCreationForm,MessageForm,ProductForm,ChatForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login ,logout
-from .forms import ProductForm
-from .models import Product
+from .models import Product,Message,chat
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-
+#Tratar de colocar un apartado de fecha de envio de mensaje
 def home(request):
     user = request.user
     products=Product.objects.all()
@@ -23,7 +22,7 @@ def home(request):
             return redirect('home')
     context={
         'user':user,
-        'products':products
+        'products':products,
     }
     return render(request,'home.html',context)
 
@@ -99,8 +98,10 @@ def add_products(request):
 
 def product_info(request, pk):
     product= Product.objects.get(id=pk)
+    messages=Message.objects.all()
     context={
-        'product':product
+        'product':product,
+        'messages':messages
     }
     return render(request,'inf_product.html',context)
 
@@ -111,7 +112,6 @@ def edit_product(request,pk):
         form=ProductForm(request.POST, request.FILES,instance=product)
         if form.is_valid():
             form.save()
-            print('gg')
             return redirect('home')
         
     else:
@@ -136,13 +136,77 @@ def profile(request,pk):
         
     user=User.objects.get(id=pk)
     products=Product.objects.all()
+    messages=Message.objects.all()
+    ordered_messages=messages.order_by('-creation')
+    latest_chat=chat.objects.order_by('-creation_msg').first()
+    user_message=[]
+    user_message.append(latest_chat.Principal_Chat)
+    for x in ordered_messages:
+        if x !=latest_chat.Principal_Chat:
+            user_message.append(x) 
     User_Products=[product for product in products if product.created_by.id == user.id]
 
     context={
         'User':user,
         'products':products,
-        'user_products':User_Products
+        'user_products':User_Products,
+        'message':user_message
+
 
     }
     
     return render(request,'Profile.html',context)
+
+def send_message(request,pk):
+    product=Product.objects.get(id=pk)
+    Destination_User=product.created_by
+    user=request.user
+    if request.method=='POST':
+        form=MessageForm(request.POST)
+        if form.is_valid():
+            new_message=form.save(commit=False)
+            new_message.Receiver = Destination_User
+            new_message.transmitter= user
+            new_message.product_selling= product
+            new_message.save()
+            return redirect('home')
+    else:
+        form=MessageForm()
+
+    context={
+        'Destination_User':Destination_User,
+        'user':user,
+        'form':form,
+        
+    }
+    return render(request,'message.html',context)
+
+
+def Chat_View(request,pk):
+    message=Message.objects.get(id=pk)
+    form=ChatForm()
+    if request.method == 'POST':
+        form=ChatForm(request.POST)
+        
+        if form.is_valid():
+            print(True)
+            new_form=form.save(commit=False)
+            new_form.Principal_Chat= message
+            new_form.Creator= request.user
+            new_form.save()
+            return redirect('chat',message.id)
+
+        else:
+            print(False)
+    
+    User=request.user
+    Chats=chat.objects.all()
+    Chat_Pr=[cht for cht in Chats if cht.Principal_Chat == message]
+    print(Chat_Pr)
+    context={
+        'Message':message,
+        'form':form,
+        'chat':Chat_Pr,
+        'user':User
+    }
+    return render(request,'chat.html',context)

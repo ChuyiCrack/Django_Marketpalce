@@ -1,13 +1,10 @@
 {% include 'navbar.html' %}
-
 {% if request.user == User %}
     <h1>My Products</h1>
 
 {% else %}
     <h1>{{User.username}} Products</h1>
-
 {% endif %}
-
 
 <div class="god_container">
 {% for product in products %}
@@ -51,13 +48,59 @@
     
 {% endif %}
 
+{% if request.user == User %}
+<p>Messgaes</p>
+<div class="message_tray">
+    {% if message|length >= 1%}
+        
+        {% for msg in message %}
+            <a href="{% url 'chat' msg.id %}">
+                {% if msg.transmitter == request.user %}
+                    <div class="message_box">
+                {% else %}
+                    <div class="message_box_Receiver">  
+                {% endif %}
+                    <p>{{msg.Title}}</p>
+                    <p>{{msg.creation|date:"M d, Y H:i"}}</p>
+                    <p>from: {{msg.transmitter}}</p>
+                    <p>{{msg.id}}</p>
+                </div> 
+            </a>
+        {% endfor %}
+    
+    {% else %}
+        <h1>You dont have any messages</h1>
+    {% endif %}
+    </div>
+{% endif %}
+
 <style>
+.message_tray{
+    height: 150px;
+    width:fit-content;
+    background-color: pink;
+    overflow-y: auto;
+}
+.message_box{
+    background-color: #35B4E4;
+    width: 160px;
+    margin: 10 0 10 0;
+}
 
+.message_box_Receiver{
+    background-color: #E34134;
+    width: 160px;
+    margin: 10 0 10 0;
+}
 
+.message_box p, .message_box_Receiver p{
+    margin: 5 0 5 0;
+}
 .god_container{
     display: flex;
     justify-content: center;
     align-items: center;
+    
     
 }
     .img_product{
@@ -71,10 +114,6 @@
         margin:0 25 0 25;
         width: 350px;
         
-    }
-
-    .sad_alert{
-
     }
 
 

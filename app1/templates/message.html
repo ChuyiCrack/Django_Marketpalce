@@ -1,0 +1,11 @@
+{% include 'navbar.html' %}
+
+<h1>Send a Message</h1>
+<h2>{{user}}</h2>
+<h2>{{Destination_User}}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit">submit</button>
+</form>

@@ -8,7 +8,7 @@
 
 <div class="outside_box">
     {% for product in products %}  
-        {% if forloop.counter < 5 %}
+        {% if forloop.counter < 4 %}
         <div class="box_product">
         {% else %}
         <div class="four_box box_product">
@@ -27,7 +27,7 @@
                 
             {% else %}
                 {% if user.is_authenticated %}
-                <a href="">Send Message</a>
+                <a href="{% url 'message' product.created_by.id %}">Send Message</a>
 
                 {% else %}
                     <p>You need to be logged in to send a message</p>

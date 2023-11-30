@@ -5,6 +5,7 @@ from django.contrib.auth import login ,logout
 from .models import Product,Message,chat
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 #Tratar de colocar un apartado de fecha de envio de mensaje
 def home(request):
@@ -136,14 +137,17 @@ def profile(request,pk):
         
     user=User.objects.get(id=pk)
     products=Product.objects.all()
-    messages=Message.objects.all()
+    messages=Message.objects.filter(Q(transmitter=request.user  ) | Q(Receiver=request.user  ))
     ordered_messages=messages.order_by('-creation')
-    latest_chat=chat.objects.order_by('-creation_msg').first()
+    latest_chat=chat.objects.filter(Q(Principal_Chat__transmitter=request.user  ) | Q(Principal_Chat__Receiver=request.user  ) ).order_by('-creation_msg').first()
     user_message=[]
-    user_message.append(latest_chat.Principal_Chat)
-    for x in ordered_messages:
-        if x !=latest_chat.Principal_Chat:
-            user_message.append(x) 
+    print(latest_chat)
+    if latest_chat:
+        user_message.append(latest_chat.Principal_Chat)
+        for x in ordered_messages:
+            if x !=latest_chat.Principal_Chat:
+                user_message.append(x)
+
     User_Products=[product for product in products if product.created_by.id == user.id]
 
     context={

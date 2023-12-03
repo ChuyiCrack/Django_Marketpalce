@@ -12,7 +12,7 @@
         <div class="principal_box">
             <a href="{% url 'product_info' product.id %}"><img class="img_product" src="{{product.image.url}}"></a>
             
-            <div>
+            <div class="description">
                 <p>{{product.Name}}</p>
                 <p>${{product.Price}}</p>
                 {% if product.Description %}
@@ -20,15 +20,16 @@
                 {% else %}
                 <p>Non Description</p>
                 {% endif %}
-            </div>
-            
-            {% if product.created_by.id == user.id or user.is_staff %}
+                {% if product.created_by.id == user.id or user.is_staff %}
                 <form method="post">
                     {% csrf_token %}
                     <button name="edit" value="{{product.id}}">Edit</button>
                     <button name="delete" value="{{product.id}}">Delete</button>
                 </form>
-            {% endif %}  
+                {% endif %}  
+            </div>
+            
+            
         </div>
     {% endif %}
 {% endfor %}    
@@ -78,7 +79,7 @@
 .message_tray{
     height: 150px;
     width:fit-content;
-    background-color: pink;
+    background-color: #D8D8D8;
     overflow-y: auto;
 }
 .message_box{
@@ -103,18 +104,24 @@
     
     
 }
-    .img_product{
+.img_product{
         width: 100%;
         height: 300px;
         
     }
     
-    .principal_box{
-        background-color: red;
+.principal_box{
+        background-color: #C6C6C6;
+        border: 2px solid #000;
+        border-radius: 8px;
         margin:0 25 0 25;
         width: 350px;
         
     }
+
+.description{
+    margin-left:5px;
+}
 
 
     

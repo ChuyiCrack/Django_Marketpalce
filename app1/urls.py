@@ -11,5 +11,6 @@ urlpatterns=[
     path('update/<str:pk>/',views.edit_product, name='update_product'),
     path('profile/<str:pk>/',views.profile, name='profile'),
     path('message/<str:pk>/',views.send_message, name='message'),
-    path('chat/<str:pk>/',views.Chat_View,name='chat')
+    path('chat/<str:pk>/',views.Chat_View,name='chat'),
+    path('search/',views.search_product, name='search_product')
 ]

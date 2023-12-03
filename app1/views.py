@@ -15,12 +15,20 @@ def home(request):
         if 'edit' in request.POST:
             pk=request.POST.get('edit')
             return redirect('update_product',pk)
-        
+            print('Search')
+            search_query = request.POST['search_bar']
+            print(search_query)
         elif 'delete' in request.POST:
             pk=request.POST.get('delete')
             product=Product.objects.get(id=pk)
             product.delete()
             return redirect('home')
+        
+        elif 'search' in request.POST:
+            search_query = request.GET['search_bar']
+            print(search_query)
+        
+
     context={
         'user':user,
         'products':products,
@@ -100,9 +108,23 @@ def add_products(request):
 def product_info(request, pk):
     product= Product.objects.get(id=pk)
     messages=Message.objects.all()
+    counter=0
+
+    for msg in messages:
+        if request.user in (msg.Receiver,msg.transmitter):
+            if msg.product_selling.id == product.id:
+                counter+=1
+                message=msg.id
+                break
+
+        else:
+            message=None
+
+
     context={
         'product':product,
-        'messages':messages
+        'message':message,
+        'counter':counter
     }
     return render(request,'inf_product.html',context)
 
@@ -147,6 +169,8 @@ def profile(request,pk):
         for x in ordered_messages:
             if x !=latest_chat.Principal_Chat:
                 user_message.append(x)
+
+
 
     User_Products=[product for product in products if product.created_by.id == user.id]
 
@@ -214,3 +238,20 @@ def Chat_View(request,pk):
         'user':User
     }
     return render(request,'chat.html',context)
+
+def search_product(request):
+    if request.method == 'POST':
+        search_query = request.POST['search_bar']
+        if search_query=="":
+            return redirect('home')
+        
+        else:
+            products=Product.objects.filter(Name__contains=search_query)
+        
+        print(search_query)
+
+        context={
+            'search':search_query,
+            'products':products,
+        }
+    return render(request,'search.html',context)
